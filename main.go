@@ -26,10 +26,11 @@ func main() {
 			break
 		}
 
-		if rune(string2[idx]) != i {
-			fmt.Printf(Red + string(i) + Reset)
+		character := string2[idx]
+		if rune(character) != i {
+			fmt.Printf("%s%c%s", Red, character, Reset)
 		} else {
-			fmt.Printf("%s", string(i))
+			fmt.Printf("%c", character)
 		}
 	}
 	fmt.Println()
