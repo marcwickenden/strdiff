@@ -1,25 +1,35 @@
 package main
 
 import (
+	"encoding/hex"
+	"flag"
 	"fmt"
 	"os"
 )
 
 var (
-	Red   = "\033[31m"
-	Reset = "\033[0m"
+	Red      = "\033[31m"
+	Reset    = "\033[0m"
+	printHex bool
 )
 
 func main() {
-	if len(os.Args) < 3 {
+	flag.BoolVar(&printHex, "hex", false, "Show hex of strings")
+	flag.Parse()
+
+	if len(flag.Args()) < 2 {
 		fmt.Printf("usage: %s <string1> <string2>", os.Args[0])
 		os.Exit(1)
 	}
 
-	string1 := os.Args[1]
-	string2 := os.Args[2]
+	string1 := flag.Arg(0)
+	string2 := flag.Arg(1)
 
-	fmt.Println(string1)
+	if printHex {
+		fmt.Println(hex.EncodeToString([]byte(string1)))
+	} else {
+		fmt.Println(string1)
+	}
 
 	for idx, i := range string1 {
 		if len(string2) < idx+1 {
@@ -27,11 +37,21 @@ func main() {
 		}
 
 		character := string2[idx]
+
 		if rune(character) != i {
-			fmt.Printf("%s%c%s", Red, character, Reset)
+			if printHex {
+				fmt.Printf("%s%s%s", Red, hex.EncodeToString([]byte{character}), Reset)
+			} else {
+				fmt.Printf("%s%U%s", Red, character, Reset)
+			}
 		} else {
-			fmt.Printf("%c", character)
+			if printHex {
+				fmt.Printf("%s", hex.EncodeToString([]byte{character}))
+			} else {
+				fmt.Printf("%U", character)
+			}
 		}
+
 	}
 	fmt.Println()
 
